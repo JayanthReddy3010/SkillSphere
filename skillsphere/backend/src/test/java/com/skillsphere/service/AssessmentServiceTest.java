@@ -803,4 +803,61 @@ class AssessmentServiceTest {
         assertEquals(1, dbActiveAttempts.size());
         verify(attemptRepository, times(2)).save(any(AssessmentAttempt.class));
     }
+
+    @Test
+    @DisplayName("SS-BE-001: getUserGaps recalculates and persists skill gaps when cache is empty")
+    void testGetUserGaps_WhenGapsEmpty_RecalculatesAndPersists() {
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+        when(skillGapRepository.findByUserId(1L)).thenReturn(List.of());
+
+        RoleSkillRequirement req = new RoleSkillRequirement("Software Developer", skill, "Advanced", "HIGH");
+        when(requirementRepository.findByJobRole(anyString())).thenReturn(List.of(req));
+        when(employeeSkillRepository.findByUserId(1L)).thenReturn(List.of());
+
+        SkillGap savedGap = new SkillGap(user, skill, 1, 4, 3, "HIGH");
+        savedGap.setCalculatedAt(Instant.now());
+        when(skillGapRepository.findByUserIdAndSkillId(1L, 2L)).thenReturn(Optional.empty());
+        when(skillGapRepository.save(any(SkillGap.class))).thenReturn(savedGap);
+
+        List<SkillGapDto> result = assessmentService.getUserGaps("john@example.com");
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Java Spring Boot", result.get(0).skillName());
+        assertEquals("HIGH", result.get(0).priority());
+        verify(skillGapRepository, times(1)).save(any(SkillGap.class));
+    }
+
+    @Test
+    @DisplayName("SS-BE-001: getUserGaps returns cached gaps directly without recalculating or persisting")
+    void testGetUserGaps_WhenGapsPresent_ReturnsCachedWithoutRecalculation() {
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+        SkillGap existingGap = new SkillGap(user, skill, 3, 4, 1, "MEDIUM");
+        existingGap.setCalculatedAt(Instant.now());
+        when(skillGapRepository.findByUserId(1L)).thenReturn(List.of(existingGap));
+
+        List<SkillGapDto> result = assessmentService.getUserGaps("john@example.com");
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals("Java Spring Boot", result.get(0).skillName());
+        assertEquals("MEDIUM", result.get(0).priority());
+        verify(skillGapRepository, never()).save(any(SkillGap.class));
+    }
+
+    @Test
+    @DisplayName("SS-BE-001: Repeated requests reuse cached gaps and do not create duplicate records")
+    void testGetUserGaps_SubsequentRequests_Idempotent() {
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+        SkillGap existingGap = new SkillGap(user, skill, 3, 4, 1, "MEDIUM");
+        existingGap.setCalculatedAt(Instant.now());
+        when(skillGapRepository.findByUserId(1L)).thenReturn(List.of(existingGap));
+
+        List<SkillGapDto> firstCall = assessmentService.getUserGaps("john@example.com");
+        List<SkillGapDto> secondCall = assessmentService.getUserGaps("john@example.com");
+
+        assertEquals(1, firstCall.size());
+        assertEquals(1, secondCall.size());
+        verify(skillGapRepository, never()).save(any(SkillGap.class));
+    }
 }

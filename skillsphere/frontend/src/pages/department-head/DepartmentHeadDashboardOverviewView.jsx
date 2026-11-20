@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Icon from "../../components/Icons.jsx";
 import Alert from "../../components/Alert.jsx";
+import KpiCard from "../../components/KpiCard.jsx";
 import { getDepartmentHeadOverview } from "../../services/departmentHeadService.js";
 
 export default function DepartmentHeadDashboardOverviewView({ onNavigateTab }) {
@@ -41,63 +42,39 @@ export default function DepartmentHeadDashboardOverviewView({ onNavigateTab }) {
   return (
     <div>
       {/* KPI Grid */}
-      <div className="dh-kpi-grid">
-        <div className="dh-kpi-card">
-          <div className="dh-kpi-header">
-            <span className="dh-kpi-label">Workforce Strength</span>
-            <span className="dh-kpi-icon" style={{ color: "var(--dh-primary)" }}>
-              <Icon name="users" size={20} />
-            </span>
-          </div>
-          <div className="dh-kpi-value">{data?.totalEmployees ?? 0}</div>
-          <div className="dh-kpi-subtext">Across {data?.totalTeams ?? 0} functional teams</div>
-        </div>
-
-        <div className="dh-kpi-card">
-          <div className="dh-kpi-header">
-            <span className="dh-kpi-label">Skill Coverage</span>
-            <span className="dh-kpi-icon" style={{ color: "var(--dh-emerald)" }}>
-              <Icon name="target" size={20} />
-            </span>
-          </div>
-          <div className="dh-kpi-value">{data?.skillCoveragePercentage ?? 0}%</div>
-          <div className="dh-kpi-subtext">{data?.assessedEmployeesCount ?? 0} evaluated / {data?.unassessedEmployeesCount ?? 0} pending</div>
-        </div>
-
-        <div className="dh-kpi-card">
-          <div className="dh-kpi-header">
-            <span className="dh-kpi-label">Critical Shortages</span>
-            <span className="dh-kpi-icon" style={{ color: "var(--dh-rose)" }}>
-              <Icon name="alert" size={20} />
-            </span>
-          </div>
-          <div className="dh-kpi-value" style={{ color: data?.criticalShortagesCount > 0 ? "var(--dh-rose)" : "inherit" }}>
-            {data?.criticalShortagesCount ?? 0}
-          </div>
-          <div className="dh-kpi-subtext">Total gaps: {data?.totalDepartmentGapsCount ?? 0}</div>
-        </div>
-
-        <div className="dh-kpi-card">
-          <div className="dh-kpi-header">
-            <span className="dh-kpi-label">Active Programmes</span>
-            <span className="dh-kpi-icon" style={{ color: "var(--dh-accent)" }}>
-              <Icon name="book" size={20} />
-            </span>
-          </div>
-          <div className="dh-kpi-value">{data?.activeProgrammesCount ?? 0}</div>
-          <div className="dh-kpi-subtext">{data?.totalEnrollmentsCount ?? 0} enrollments ({data?.avgCompletionRate ?? 0}% completion)</div>
-        </div>
-
-        <div className="dh-kpi-card">
-          <div className="dh-kpi-header">
-            <span className="dh-kpi-label">Mentorship Cohorts</span>
-            <span className="dh-kpi-icon" style={{ color: "var(--dh-indigo)" }}>
-              <Icon name="award" size={20} />
-            </span>
-          </div>
-          <div className="dh-kpi-value">{data?.activeMentorshipsCount ?? 0}</div>
-          <div className="dh-kpi-subtext">Active 1-on-1 pairings</div>
-        </div>
+      <div className="dash-kpi-grid">
+        <KpiCard
+          title="Workforce Strength"
+          value={data?.totalEmployees ?? 0}
+          icon="users"
+          meta={`Across ${data?.totalTeams ?? 0} functional teams`}
+        />
+        <KpiCard
+          title="Skill Coverage"
+          value={`${data?.skillCoveragePercentage ?? 0}%`}
+          icon="target"
+          meta={`${data?.assessedEmployeesCount ?? 0} evaluated / ${data?.unassessedEmployeesCount ?? 0} pending`}
+        />
+        <KpiCard
+          title="Critical Shortages"
+          value={data?.criticalShortagesCount ?? 0}
+          icon="alert"
+          meta={`Total gaps: ${data?.totalDepartmentGapsCount ?? 0}`}
+          trend={data?.criticalShortagesCount > 0 ? "Action Required" : "Balanced"}
+          trendUp={data?.criticalShortagesCount === 0}
+        />
+        <KpiCard
+          title="Active Programmes"
+          value={data?.activeProgrammesCount ?? 0}
+          icon="book"
+          meta={`${data?.totalEnrollmentsCount ?? 0} enrollments (${data?.avgCompletionRate ?? 0}% completion)`}
+        />
+        <KpiCard
+          title="Mentorship Cohorts"
+          value={data?.activeMentorshipsCount ?? 0}
+          icon="award"
+          meta="Active 1-on-1 pairings"
+        />
       </div>
 
       {/* Strategic Priority Alerts */}
@@ -149,7 +126,7 @@ export default function DepartmentHeadDashboardOverviewView({ onNavigateTab }) {
       )}
 
       {/* Two Column Layout: Upcoming Programmes & Recent Activities */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+      <div className="dash-grid-2col">
         {/* Upcoming Programmes */}
         <div className="dh-panel">
           <div className="dh-panel-header">

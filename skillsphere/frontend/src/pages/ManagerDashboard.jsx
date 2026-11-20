@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import DashboardLayout from "../components/DashboardLayout.jsx";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Logo from "../components/Logo.jsx";
 import Icon from "../components/Icons.jsx";
@@ -49,21 +50,43 @@ import {
 
 import "../styles/manager.css";
 
-const NAV_ITEMS = [
-  { id: "dashboard", label: "Dashboard", icon: "dashboard" },
-  { id: "team", label: "My Team", icon: "users" },
-  { id: "inventory", label: "Team Skill Inventory", icon: "clipboard" },
-  { id: "gaps", label: "Team Gap Analysis", icon: "alert" },
-  { id: "heatmap", label: "Skill Gap Heatmap", icon: "chart" },
-  { id: "assessments", label: "Employee Assessments", icon: "target" },
-  { id: "learning-recs", label: "Learning Recommendations", icon: "sparkles", tag: "AI" },
-  { id: "learning-progress", label: "Learning Progress", icon: "trending" },
-  { id: "mentorship", label: "Mentorship Support", icon: "award" },
-  { id: "chat", label: "Messages / Team Chat", icon: "message" },
-  { id: "notifications", label: "Alerts & Notifications", icon: "bell" },
-  { id: "reports", label: "Team Reports", icon: "file" },
-  { id: "calendar", label: "Calendar", icon: "calendar" },
+export const MANAGER_NAV_GROUPS = [
+  {
+    category: "Team & Overview",
+    items: [
+      { id: "dashboard", label: "Dashboard", icon: "dashboard" },
+      { id: "team", label: "My Team", icon: "users" },
+      { id: "calendar", label: "Calendar", icon: "calendar" },
+    ],
+  },
+  {
+    category: "Skill Intelligence",
+    items: [
+      { id: "inventory", label: "Team Skill Inventory", icon: "clipboard" },
+      { id: "gaps", label: "Team Gap Analysis", icon: "alert" },
+      { id: "heatmap", label: "Skill Gap Heatmap", icon: "chart" },
+    ],
+  },
+  {
+    category: "Assessments & Growth",
+    items: [
+      { id: "assessments", label: "Employee Assessments", icon: "target" },
+      { id: "learning-recs", label: "Learning Recommendations", icon: "sparkles", tag: "AI" },
+      { id: "learning-progress", label: "Learning Progress", icon: "trending" },
+    ],
+  },
+  {
+    category: "Collaboration & Reports",
+    items: [
+      { id: "mentorship", label: "Mentorship Support", icon: "award" },
+      { id: "chat", label: "Messages / Team Chat", icon: "message" },
+      { id: "notifications", label: "Alerts & Notifications", icon: "bell" },
+      { id: "reports", label: "Team Reports", icon: "file" },
+    ],
+  },
 ];
+
+export const NAV_ITEMS = MANAGER_NAV_GROUPS.flatMap((g) => g.items);
 
 export default function ManagerDashboard() {
   const { user, signOut } = useAuth();
@@ -227,90 +250,45 @@ export default function ManagerDashboard() {
     ? managedTeams.find((t) => String(t.id) === String(selectedTeamId))?.name || "Managed Team"
     : "All Managed Teams";
 
+  const activeItem = NAV_ITEMS.find((n) => n.id === activeTab) || NAV_ITEMS[0];
+  const pageTitle = activeItem ? activeItem.label : "Team Lead Workspace";
+
+  const teamSelector = (
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <span style={{ fontSize: "0.82rem", fontWeight: 700, color: "var(--dash-soft)" }}>Scope:</span>
+      <select
+        className="filter-select"
+        style={{ fontWeight: 600, minWidth: "180px", background: "#f8fafc", height: "36px", padding: "0 10px", borderRadius: "8px", border: "1px solid var(--dash-border)" }}
+        value={selectedTeamId}
+        onChange={(e) => setSelectedTeamId(e.target.value)}
+      >
+        <option value="">All Managed Teams ({managedTeams.length})</option>
+        {managedTeams.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name} ({t.memberCount} members)
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
   return (
-    <div className="manager-app">
-      {/* Sidebar Navigation */}
-      <aside className="manager-sidebar">
-        <div className="sidebar-brand">
-          <Logo />
-          <span>TEAM LEAD WORKSPACE</span>
-        </div>
+    <DashboardLayout
+      role="MANAGER"
+      roleLabel="TEAM LEAD WORKSPACE"
+      user={user}
+      activeTab={activeTab}
+      onSelectTab={setActiveTab}
+      navGroups={MANAGER_NAV_GROUPS}
+      topbarExtra={teamSelector}
+      onSignOut={handleSignOut}
+      pageTitle={pageTitle}
+    >
+      <div className="manager-content" style={{ maxWidth: "100%", padding: 0 }}>
+        {error && <Alert type="error" message={error} onClose={() => setError("")} />}
+        {success && <Alert type="success" message={success} onClose={() => setSuccess("")} />}
 
-        <nav>
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              className={`nav-item ${activeTab === item.id ? "is-active" : ""}`}
-              onClick={() => setActiveTab(item.id)}
-            >
-              <Icon name={item.icon} size={18} />
-              <span className="nav-label">{item.label}</span>
-              {item.tag && <span className="nav-tag">{item.tag}</span>}
-              {item.id === "gaps" && overview?.criticalGaps > 0 && (
-                <span className="nav-tag" style={{ background: "#dc2626" }}>
-                  {overview.criticalGaps}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
 
-        <div className="sidebar-bottom">
-          <div className="sidebar-avatar">
-            {user?.fullName?.charAt(0) || "M"}
-          </div>
-          <div>
-            <strong>{user?.fullName}</strong>
-            <small>{user?.role || "Manager"}</small>
-          </div>
-          <button
-            className="sidebar-signout"
-            title="Sign out"
-            onClick={handleSignOut}
-          >
-            <Icon name="logout" size={18} />
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Workspace */}
-      <main className="manager-main">
-        {/* Topbar */}
-        <header className="manager-topbar">
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-            <span style={{ fontSize: "0.88rem", fontWeight: 700, color: "#475569" }}>
-              Reporting Scope:
-            </span>
-            <select
-              className="filter-select"
-              style={{ fontWeight: 600, minWidth: "220px", background: "#f8fafc" }}
-              value={selectedTeamId}
-              onChange={(e) => setSelectedTeamId(e.target.value)}
-            >
-              <option value="">All Managed Teams ({managedTeams.length})</option>
-              {managedTeams.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name} ({t.memberCount} members)
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-            <NotificationsPopover />
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "0.85rem", fontWeight: 600 }}>
-              <span className="badge" style={{ background: "#eff6ff", color: "#1d4ed8" }}>
-                {user?.role}
-              </span>
-              <span>{user?.fullName}</span>
-            </div>
-          </div>
-        </header>
-
-        {/* Dynamic Content */}
-        <div className="manager-content">
-          {error && <Alert type="error" message={error} onClose={() => setError("")} />}
-          {success && <Alert type="success" message={success} onClose={() => setSuccess("")} />}
 
           {/* Module 1: Dashboard */}
           {activeTab === "dashboard" && (
@@ -511,10 +489,9 @@ export default function ManagerDashboard() {
             </div>
           )}
         </div>
-      </main>
 
-      {/* Global Modals */}
-      <ReassessmentModal
+        {/* Global Modals */}
+        <ReassessmentModal
         isOpen={reassessmentModal.open}
         onClose={() => setReassessmentModal({ open: false, data: {} })}
         initialData={reassessmentModal.data}
@@ -547,6 +524,6 @@ export default function ManagerDashboard() {
           loadScopedData();
         }}
       />
-    </div>
+    </DashboardLayout>
   );
 }

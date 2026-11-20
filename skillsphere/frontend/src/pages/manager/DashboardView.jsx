@@ -1,4 +1,5 @@
 import Icon from "../../components/Icons.jsx";
+import KpiCard from "../../components/KpiCard.jsx";
 
 export default function DashboardView({ overview, onNavigate, selectedTeamName }) {
   if (!overview) {
@@ -49,65 +50,60 @@ export default function DashboardView({ overview, onNavigate, selectedTeamName }
         </div>
       </div>
 
-      {/* Primary KPI Grid */}
-      <div className="stat-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: "#eff6ff", color: "#2563eb" }}>
-            <Icon name="users" size={22} />
-          </div>
-          <span className="stat-label">Managed Workforce</span>
-          <strong>{totalEmployees}</strong>
-          <small>{totalTeams} {totalTeams === 1 ? "Active Team" : "Active Teams"}</small>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: "#ecfdf5", color: "#059669" }}>
-            <Icon name="target" size={22} />
-          </div>
-          <span className="stat-label">Assessed Skills</span>
-          <strong>{totalAssessedSkills}</strong>
-          <small>{skillCoveragePercentage}% Team Coverage</small>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: "#fef2f2", color: "#dc2626" }}>
-            <Icon name="alert" size={22} />
-          </div>
-          <span className="stat-label">Open Skill Gaps</span>
-          <strong style={{ color: criticalGaps > 0 ? "#dc2626" : "inherit" }}>{totalGaps}</strong>
-          <small>{criticalGaps} Critical, {highGaps} High Priority</small>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: "#fffbeb", color: "#d97706" }}>
-            <Icon name="refresh" size={22} />
-          </div>
-          <span className="stat-label">Reassessment Requests</span>
-          <strong>{pendingReassessments}</strong>
-          <small>Pending validation</small>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: "#f5f3ff", color: "#7c3aed" }}>
-            <Icon name="book" size={22} />
-          </div>
-          <span className="stat-label">Learning Progress</span>
-          <strong>{courseCompletionRate}%</strong>
-          <small>{completedCourses} Completed of {activeCourseEnrollments + completedCourses}</small>
-        </div>
-
-        <div className="stat-card">
-          <div className="stat-icon" style={{ background: "#fdf4ff", color: "#c026d3" }}>
-            <Icon name="award" size={22} />
-          </div>
-          <span className="stat-label">Mentorship Coverage</span>
-          <strong>{activeMentorships}</strong>
-          <small>Active Mentorship Pairings</small>
-        </div>
+      {/* Standardized Primary KPI Grid */}
+      <div className="dash-kpi-grid">
+        <KpiCard
+          title="Managed Workforce"
+          value={totalEmployees}
+          subtext={`${totalTeams} ${totalTeams === 1 ? "Active Team" : "Active Teams"}`}
+          icon="users"
+          colorVariant="blue"
+          onClick={() => onNavigate("team")}
+        />
+        <KpiCard
+          title="Assessed Skills"
+          value={totalAssessedSkills}
+          subtext={`${skillCoveragePercentage}% Team Coverage`}
+          icon="target"
+          colorVariant="emerald"
+          onClick={() => onNavigate("inventory")}
+        />
+        <KpiCard
+          title="Open Skill Gaps"
+          value={totalGaps}
+          subtext={`${criticalGaps} Critical, ${highGaps} High Priority`}
+          icon="alert"
+          colorVariant={criticalGaps > 0 ? "rose" : "amber"}
+          onClick={() => onNavigate("gaps")}
+        />
+        <KpiCard
+          title="Reassessment Requests"
+          value={pendingReassessments}
+          subtext="Pending validation"
+          icon="refresh"
+          colorVariant="amber"
+          onClick={() => onNavigate("assessments")}
+        />
+        <KpiCard
+          title="Learning Progress"
+          value={`${courseCompletionRate}%`}
+          subtext={`${completedCourses} of ${activeCourseEnrollments + completedCourses} completed`}
+          icon="book"
+          colorVariant="indigo"
+          onClick={() => onNavigate("learning-progress")}
+        />
+        <KpiCard
+          title="Mentorship Coverage"
+          value={activeMentorships}
+          subtext="Active Mentorship Pairings"
+          icon="award"
+          colorVariant="primary"
+          onClick={() => onNavigate("mentorship")}
+        />
       </div>
 
       {/* Two Column Section: Competency Distribution & Skill Coverage */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: "20px" }}>
+      <div className="dash-grid-2col">
         {/* Proficiency Distribution */}
         <div className="panel">
           <div className="section-heading">
@@ -202,7 +198,7 @@ export default function DashboardView({ overview, onNavigate, selectedTeamName }
       </div>
 
       {/* Two Column Section: Recent Activities & Alerts */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: "20px" }}>
+      <div className="dash-grid-2col">
         {/* Recent Activities */}
         <div className="panel">
           <div className="section-heading">

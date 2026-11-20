@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Icon from "../../components/Icons.jsx";
 import Alert from "../../components/Alert.jsx";
+import KpiCard from "../../components/KpiCard.jsx";
 import MentorshipHub from "./MentorshipHub.jsx";
 import {
   getNotifications,
@@ -141,7 +142,7 @@ export function Overview({ user, assessment, latestSubmission, serverGaps = [], 
     </section>
 
     {/* Organizational Context & Identity Strip */}
-    <div className="panel" style={{ marginBottom: "20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "16px", padding: "16px 20px" }}>
+    <div className="panel" style={{ marginBottom: "20px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "16px", padding: "16px 20px" }}>
       <div>
         <small className="muted" style={{ display: "block", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Employee ID</small>
         <strong>{overview?.employeeId || user.employeeId || "EMP-001"}</strong>
@@ -168,35 +169,40 @@ export function Overview({ user, assessment, latestSubmission, serverGaps = [], 
       </div>
     </div>
 
-    {/* Metric Cards - Backed by PostgreSQL */}
-    <div className="stat-grid">
-      <div className="stat-card">
-        <span className="stat-icon"><Icon name="clipboard"/></span>
-        <span className="stat-label">Latest Assessment</span>
-        <strong>{overview?.latestAssessmentScore !== null && overview?.latestAssessmentScore !== undefined ? `${overview.latestAssessmentScore}%` : (sub ? `${sub.score}%` : "—")}</strong>
-        <small>{overview?.latestAssessmentSkill ? `${overview.latestAssessmentSkill} evaluated` : (sub ? "Evaluated by server" : "No assessment taken yet")}</small>
-      </div>
-
-      <div className="stat-card">
-        <span className="stat-icon"><Icon name="target"/></span>
-        <span className="stat-label">Active Skill Gaps</span>
-        <strong style={{ color: (gapCount || 0) > 0 ? "#b42318" : "#17754f" }}>{gapCount !== null ? gapCount : "—"}</strong>
-        <small>{gapCount === 0 ? "All skills on track!" : "Skills below target proficiency"}</small>
-      </div>
-
-      <div className="stat-card">
-        <span className="stat-icon"><Icon name="book"/></span>
-        <span className="stat-label">Active Learning</span>
-        <strong>{overview ? overview.activeLearningsCount : "0"}</strong>
-        <small>{overview ? `${overview.completedCoursesCount} completed courses` : "Courses in progress"}</small>
-      </div>
-
-      <div className="stat-card">
-        <span className="stat-icon"><Icon name="award"/></span>
-        <span className="stat-label">Certificates Earned</span>
-        <strong style={{ color: "#1d4ed8" }}>{overview ? overview.certificatesCount : "0"}</strong>
-        <small>Official verified credentials</small>
-      </div>
+    {/* Standardized Metric Cards - Backed by PostgreSQL */}
+    <div className="dash-kpi-grid">
+      <KpiCard
+        title="Latest Assessment"
+        value={overview?.latestAssessmentScore !== null && overview?.latestAssessmentScore !== undefined ? `${overview.latestAssessmentScore}%` : (sub ? `${sub.score}%` : "—")}
+        subtext={overview?.latestAssessmentSkill ? `${overview.latestAssessmentSkill} evaluated` : (sub ? "Evaluated by server" : "No assessment taken yet")}
+        icon="clipboard"
+        colorVariant="blue"
+        onClick={() => setActivePage("assessment")}
+      />
+      <KpiCard
+        title="Active Skill Gaps"
+        value={gapCount !== null ? gapCount : "—"}
+        subtext={gapCount === 0 ? "All skills on track!" : "Skills below target proficiency"}
+        icon="target"
+        colorVariant={(gapCount || 0) > 0 ? "rose" : "emerald"}
+        onClick={() => setActivePage("gaps")}
+      />
+      <KpiCard
+        title="Active Learning"
+        value={overview ? overview.activeLearningsCount : "0"}
+        subtext={overview ? `${overview.completedCoursesCount} completed courses` : "Courses in progress"}
+        icon="book"
+        colorVariant="indigo"
+        onClick={() => setActivePage("learning")}
+      />
+      <KpiCard
+        title="Certificates Earned"
+        value={overview ? overview.certificatesCount : "0"}
+        subtext="Official verified credentials"
+        icon="award"
+        colorVariant="amber"
+        onClick={() => setActivePage("certificates")}
+      />
     </div>
 
     {/* Two-Column Overview Content */}

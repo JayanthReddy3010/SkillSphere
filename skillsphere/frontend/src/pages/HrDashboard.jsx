@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DashboardLayout from "../components/DashboardLayout.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import Logo from "../components/Logo.jsx";
 import Icon from "../components/Icons.jsx";
@@ -23,21 +24,43 @@ import FeedbackEffectivenessView from "./hr/FeedbackEffectivenessView.jsx";
 import ReportsAnalyticsView from "./hr/ReportsAnalyticsView.jsx";
 import NotificationsAnnouncementsView from "./hr/NotificationsAnnouncementsView.jsx";
 
-const NAV_ITEMS = [
-  { id: "overview", label: "HR Dashboard", icon: "dashboard", path: "dashboard" },
-  { id: "employees", label: "Employee Directory", icon: "user", path: "employees" },
-  { id: "competencies", label: "Competency Framework", icon: "clipboard", path: "competencies" },
-  { id: "role-requirements", label: "Role Requirements", icon: "target", path: "role-requirements" },
-  { id: "skill-gaps", label: "Org Skill Gap Analysis", icon: "chart", path: "skill-gaps" },
-  { id: "learning-catalogue", label: "Learning Catalogue", icon: "book", path: "learning-catalogue" },
-  { id: "learning-paths", label: "Learning Paths", icon: "map", path: "learning-paths" },
-  { id: "training-programmes", label: "Training Programmes", icon: "calendar", path: "training-programmes" },
-  { id: "mentors", label: "Mentor Directory", icon: "users", path: "mentors" },
-  { id: "learning-progress", label: "Learning Progress", icon: "trending", path: "learning-progress" },
-  { id: "feedback", label: "Feedback & Effectiveness", icon: "star", path: "feedback" },
-  { id: "reports", label: "Reports & Analytics", icon: "file", path: "reports" },
-  { id: "notifications", label: "Notifications & Reminders", icon: "bell", path: "notifications" },
+export const HR_NAV_GROUPS = [
+  {
+    category: "Workforce & Organization",
+    items: [
+      { id: "overview", label: "HR Dashboard", icon: "dashboard", path: "dashboard" },
+      { id: "employees", label: "Employee Directory", icon: "user", path: "employees" },
+      { id: "mentors", label: "Mentor Directory", icon: "users", path: "mentors" },
+    ],
+  },
+  {
+    category: "Competency & Benchmark",
+    items: [
+      { id: "competencies", label: "Competency Framework", icon: "clipboard", path: "competencies" },
+      { id: "role-requirements", label: "Role Requirements", icon: "target", path: "role-requirements" },
+      { id: "skill-gaps", label: "Org Skill Gap Analysis", icon: "chart", path: "skill-gaps" },
+    ],
+  },
+  {
+    category: "Learning & Development",
+    items: [
+      { id: "learning-catalogue", label: "Learning Catalogue", icon: "book", path: "learning-catalogue" },
+      { id: "learning-paths", label: "Learning Paths", icon: "chart", path: "learning-paths" },
+      { id: "training-programmes", label: "Training Programmes", icon: "calendar", path: "training-programmes" },
+      { id: "learning-progress", label: "Learning Progress", icon: "trending", path: "learning-progress" },
+    ],
+  },
+  {
+    category: "Analytics & Alerts",
+    items: [
+      { id: "feedback", label: "Feedback & Effectiveness", icon: "award", path: "feedback" },
+      { id: "reports", label: "Reports & Analytics", icon: "file", path: "reports" },
+      { id: "notifications", label: "Notifications & Reminders", icon: "bell", path: "notifications" },
+    ],
+  },
 ];
+
+export const NAV_ITEMS = HR_NAV_GROUPS.flatMap((g) => g.items);
 
 export default function HrDashboard() {
   const { user, signOut } = useAuth();
@@ -80,58 +103,18 @@ export default function HrDashboard() {
   const activeItem = NAV_ITEMS.find((n) => n.id === activeTab) || NAV_ITEMS[0];
 
   return (
-    <div className="hr-app">
-      {/* Sidebar */}
-      <aside className="hr-sidebar">
-        <div className="sidebar-brand">
-          <Logo size="small" />
-          <span className="hr-badge">HR Workspace</span>
-        </div>
-
-        <nav className="hr-nav">
-          {NAV_ITEMS.map((item) => {
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                className={`hr-nav-item ${isActive ? "active" : ""}`}
-                onClick={() => handleSelectTab(item.id)}
-              >
-                <Icon name={item.icon} size={16} />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* User Card */}
-        <div className="sidebar-user">
-          <div className="sidebar-user-info">
-            <span className="sidebar-user-name">{user?.fullName || "HR Specialist"}</span>
-            <span className="sidebar-user-role">HR Specialist</span>
-          </div>
-          <button className="btn-signout" onClick={handleSignOut} title="Sign Out">
-            <Icon name="logout" size={14} />
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="hr-main">
-        {/* Header */}
-        <header className="hr-header">
-          <div className="hr-header-title">
-            <Icon name={activeItem.icon} size={20} />
-            <h1>{activeItem.label}</h1>
-          </div>
-
-          <div className="hr-header-actions">
-            <NotificationsPopover />
-          </div>
-        </header>
-
+    <DashboardLayout
+      role="HR_SPECIALIST"
+      roleLabel="HR SPECIALIST WORKSPACE"
+      user={user}
+      activeTab={activeTab}
+      onSelectTab={handleSelectTab}
+      navGroups={HR_NAV_GROUPS}
+      onSignOut={handleSignOut}
+      pageTitle={activeItem ? activeItem.label : "HR Specialist"}
+    >
+      <div className="hr-content" style={{ maxWidth: "100%", padding: 0 }}>
         {/* Content View */}
-        <div className="hr-content">
           {activeTab === "overview" && (
             <HrDashboardOverviewView onNavigateTab={handleSelectTab} />
           )}
@@ -147,8 +130,7 @@ export default function HrDashboard() {
           {activeTab === "feedback" && <FeedbackEffectivenessView />}
           {activeTab === "reports" && <ReportsAnalyticsView />}
           {activeTab === "notifications" && <NotificationsAnnouncementsView />}
-        </div>
-      </main>
-    </div>
+              </div>
+    </DashboardLayout>
   );
 }

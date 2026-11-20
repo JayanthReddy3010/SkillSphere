@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Icon from "../../components/Icons.jsx";
 import Alert from "../../components/Alert.jsx";
+import KpiCard from "../../components/KpiCard.jsx";
 import { getAdminDashboardOverview } from "../../services/adminService.js";
 
 export default function AdminDashboardOverviewView({ onNavigateTab }) {
@@ -43,69 +44,44 @@ export default function AdminDashboardOverviewView({ onNavigateTab }) {
   return (
     <div>
       {/* Platform KPI Grid */}
-      <div className="adm-kpi-grid">
-        <div className="adm-kpi-card" onClick={() => onNavigateTab("users")} style={{ cursor: "pointer" }}>
-          <div className="adm-kpi-header">
-            <span className="adm-kpi-label">Platform Accounts</span>
-            <span style={{ color: "var(--adm-blue)" }}>
-              <Icon name="users" size={20} />
-            </span>
-          </div>
-          <div className="adm-kpi-value">{data?.totalUsers ?? 0}</div>
-          <div className="adm-kpi-subtext">
-            {data?.activeUsers ?? 0} Active • {data?.inactiveUsers ?? 0} Inactive / Suspended
-          </div>
-        </div>
-
-        <div className="adm-kpi-card" onClick={() => onNavigateTab("organization")} style={{ cursor: "pointer" }}>
-          <div className="adm-kpi-header">
-            <span className="adm-kpi-label">Organization Structure</span>
-            <span style={{ color: "var(--adm-indigo)" }}>
-              <Icon name="clipboard" size={20} />
-            </span>
-          </div>
-          <div className="adm-kpi-value">{data?.totalDepartments ?? 0}</div>
-          <div className="adm-kpi-subtext">{data?.totalTeams ?? 0} Functional Teams Governed</div>
-        </div>
-
-        <div className="adm-kpi-card" onClick={() => onNavigateTab("security")} style={{ cursor: "pointer" }}>
-          <div className="adm-kpi-header">
-            <span className="adm-kpi-label">Security Alerts</span>
-            <span style={{ color: recentSecurityAlerts.length > 0 ? "var(--adm-rose)" : "var(--adm-emerald)" }}>
-              <Icon name="shield" size={20} />
-            </span>
-          </div>
-          <div className="adm-kpi-value" style={{ color: recentSecurityAlerts.length > 0 ? "var(--adm-rose)" : "inherit" }}>
-            {recentSecurityAlerts.length}
-          </div>
-          <div className="adm-kpi-subtext">Automated access & brute-force monitoring</div>
-        </div>
-
-        <div className="adm-kpi-card" onClick={() => onNavigateTab("backup")} style={{ cursor: "pointer" }}>
-          <div className="adm-kpi-header">
-            <span className="adm-kpi-label">Database Health</span>
-            <span style={{ color: "var(--adm-emerald)" }}>
-              <Icon name="target" size={20} />
-            </span>
-          </div>
-          <div className="adm-kpi-value" style={{ fontSize: "20px", marginTop: "4px" }}>
-            {systemHealth?.databaseStatus || "CONNECTED"}
-          </div>
-          <div className="adm-kpi-subtext">
-            PostgreSQL 18.4 • {systemHealth?.activeTablesCount || 56} Tables
-          </div>
-        </div>
-
-        <div className="adm-kpi-card" onClick={() => onNavigateTab("support")} style={{ cursor: "pointer" }}>
-          <div className="adm-kpi-header">
-            <span className="adm-kpi-label">Open Support Tickets</span>
-            <span style={{ color: "var(--adm-amber)" }}>
-              <Icon name="help" size={20} />
-            </span>
-          </div>
-          <div className="adm-kpi-value">{data?.openSupportTicketsCount ?? 0}</div>
-          <div className="adm-kpi-subtext">Pending administrative triage</div>
-        </div>
+      <div className="dash-kpi-grid">
+        <KpiCard
+          title="Platform Accounts"
+          value={data?.totalUsers ?? 0}
+          icon="users"
+          meta={`${data?.activeUsers ?? 0} Active • ${data?.inactiveUsers ?? 0} Inactive / Suspended`}
+          onClick={() => onNavigateTab("users")}
+        />
+        <KpiCard
+          title="Organization Structure"
+          value={data?.totalDepartments ?? 0}
+          icon="clipboard"
+          meta={`${data?.totalTeams ?? 0} Functional Teams Governed`}
+          onClick={() => onNavigateTab("organization")}
+        />
+        <KpiCard
+          title="Security Alerts"
+          value={recentSecurityAlerts.length}
+          icon="shield"
+          meta="Automated access & brute-force monitoring"
+          trend={recentSecurityAlerts.length > 0 ? "Requires Attention" : "All Clear"}
+          trendUp={recentSecurityAlerts.length === 0}
+          onClick={() => onNavigateTab("security")}
+        />
+        <KpiCard
+          title="Database Health"
+          value={systemHealth?.databaseStatus || "CONNECTED"}
+          icon="target"
+          meta={`PostgreSQL 18.4 • ${systemHealth?.activeTablesCount || 56} Tables`}
+          onClick={() => onNavigateTab("backup")}
+        />
+        <KpiCard
+          title="Open Support Tickets"
+          value={data?.openSupportTicketsCount ?? 0}
+          icon="help"
+          meta="Pending administrative triage"
+          onClick={() => onNavigateTab("support")}
+        />
       </div>
 
       {/* System Health Status Panel */}
@@ -144,7 +120,7 @@ export default function AdminDashboardOverviewView({ onNavigateTab }) {
       </div>
 
       {/* Two Column Section: Security Alerts & Recent Users */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+      <div className="dash-grid-2col">
         {/* Security Alerts */}
         <div className="adm-panel">
           <div className="adm-panel-header">

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DashboardLayout from "../components/DashboardLayout.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import Logo from "../components/Logo.jsx";
 import Icon from "../components/Icons.jsx";
@@ -26,20 +27,37 @@ import MentorNotificationsView from "./mentor/MentorNotificationsView.jsx";
 import { getMentorOverview, getMentorProfile } from "../services/mentorService.js";
 import { parseApiError } from "../services/apiClient.js";
 
-const NAV_ITEMS = [
-  { id: "overview", label: "Dashboard", icon: "dashboard", path: "dashboard" },
-  { id: "profile", label: "Mentor Profile", icon: "user", path: "profile" },
-  { id: "requests", label: "Mentorship Requests", icon: "inbox", path: "requests" },
-  { id: "mentees", label: "My Mentees", icon: "users", path: "mentees" },
-  { id: "mentee-skills", label: "Mentee Skill Overview", icon: "target", path: "mentee-skills" },
-  { id: "goals", label: "Development Goals", icon: "clipboard", path: "goals" },
-  { id: "sessions", label: "Mentoring Sessions", icon: "clock", path: "sessions" },
-  { id: "chat", label: "Messages / Chatbox", icon: "message", path: "chat" },
-  { id: "resources", label: "Shared Resources", icon: "book", path: "resources" },
-  { id: "contributions", label: "Knowledge Contributions", icon: "award", path: "contributions" },
-  { id: "feedback", label: "Feedback", icon: "star", path: "feedback" },
-  { id: "notifications", label: "Notifications", icon: "bell", path: "notifications" },
+export const MENTOR_NAV_GROUPS = [
+  {
+    category: "Mentorship Core",
+    items: [
+      { id: "overview", label: "Dashboard", icon: "dashboard", path: "dashboard" },
+      { id: "profile", label: "Mentor Profile", icon: "user", path: "profile" },
+      { id: "requests", label: "Mentorship Requests", icon: "clipboard", path: "requests" },
+    ],
+  },
+  {
+    category: "Mentees & Development",
+    items: [
+      { id: "mentees", label: "My Mentees", icon: "users", path: "mentees" },
+      { id: "mentee-skills", label: "Mentee Skill Overview", icon: "target", path: "mentee-skills" },
+      { id: "goals", label: "Development Goals", icon: "clipboard", path: "goals" },
+      { id: "sessions", label: "Mentoring Sessions", icon: "clock", path: "sessions" },
+    ],
+  },
+  {
+    category: "Knowledge & Community",
+    items: [
+      { id: "chat", label: "Messages / Chatbox", icon: "message", path: "chat" },
+      { id: "resources", label: "Shared Resources", icon: "book", path: "resources" },
+      { id: "contributions", label: "Knowledge Contributions", icon: "award", path: "contributions" },
+      { id: "feedback", label: "Feedback", icon: "star", path: "feedback" },
+      { id: "notifications", label: "Notifications", icon: "bell", path: "notifications" },
+    ],
+  },
 ];
+
+export const NAV_ITEMS = MENTOR_NAV_GROUPS.flatMap((g) => g.items);
 
 export default function MentorDashboard() {
   const { user, signOut } = useAuth();
@@ -103,76 +121,30 @@ export default function MentorDashboard() {
 
   const pendingRequestsCount = overview ? overview.pendingRequestsCount : 0;
 
+  const mentorNavGroups = MENTOR_NAV_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.map((item) => ({
+      ...item,
+      badge: item.id === "requests" && pendingRequestsCount > 0 ? pendingRequestsCount : undefined,
+    })),
+  }));
+
+  const activeNavObj = NAV_ITEMS.find((n) => n.id === activeTab) || NAV_ITEMS[0];
+  const pageTitle = activeNavObj ? activeNavObj.label : "Mentor Workspace";
+
   return (
-    <div className="mentor-app">
-      {/* 12-Module Sidebar */}
-      <aside className="mentor-sidebar">
-        <div className="sidebar-brand">
-          <Logo />
-          <div>
-            <strong style={{ display: "block", fontSize: "0.92rem", letterSpacing: "0.02em" }}>SkillSphere</strong>
-            <span className="sidebar-brand-badge">MENTOR WORKSPACE</span>
-          </div>
-        </div>
-
-        <nav>
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={`mentor-nav-item ${activeTab === item.id ? "is-active" : ""}`}
-              onClick={() => handleNavClick(item.id)}
-            >
-              <Icon name={item.icon} size={18} />
-              <span>{item.label}</span>
-              {item.id === "requests" && pendingRequestsCount > 0 && (
-                <span className="mentor-nav-badge">{pendingRequestsCount}</span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="mentor-sidebar-footer">
-          <div className="mentor-avatar">{user?.fullName ? user.fullName.charAt(0) : "M"}</div>
-          <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
-            <strong style={{ display: "block", fontSize: "0.85rem", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>
-              {user?.fullName || "Mentor"}
-            </strong>
-            <small style={{ color: "var(--mt-faint)", fontSize: "0.75rem", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden", display: "block" }}>
-              {user?.email || ""}
-            </small>
-          </div>
-          <button
-            type="button"
-            className="mt-btn mt-btn--outline"
-            style={{ padding: "6px 8px" }}
-            onClick={onSignOut}
-            title="Sign out"
-          >
-            <Icon name="logout" size={16} />
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Workspace Area */}
-      <div className="mentor-main">
-        <header className="mentor-topbar">
-          <div className="mentor-topbar-title">
-            <span>Mentor Hub</span>
-            <span style={{ color: "var(--mt-faint)" }}>/</span>
-            <span style={{ color: "var(--mt-primary-dark)" }}>
-              {NAV_ITEMS.find((n) => n.id === activeTab)?.label}
-            </span>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-            <span className="mt-badge mt-badge--active">Role: MENTOR</span>
-            <NotificationsPopover />
-          </div>
-        </header>
-
-        <main className="mentor-content">
-          {error && <Alert type="error">{error}</Alert>}
+    <DashboardLayout
+      role="MENTOR"
+      roleLabel="MENTOR WORKSPACE"
+      user={user}
+      activeTab={activeTab}
+      onSelectTab={handleNavClick}
+      navGroups={mentorNavGroups}
+      onSignOut={onSignOut}
+      pageTitle={pageTitle}
+    >
+      <div className="mentor-content" style={{ maxWidth: "100%", padding: 0 }}>
+        {error && <Alert type="error">{error}</Alert>}
 
           {/* Module 1: Dashboard */}
           {activeTab === "overview" && (
@@ -250,8 +222,7 @@ export default function MentorDashboard() {
           {activeTab === "notifications" && (
             <MentorNotificationsView onNavigateTab={handleNavClick} />
           )}
-        </main>
-      </div>
-    </div>
+              </div>
+    </DashboardLayout>
   );
 }

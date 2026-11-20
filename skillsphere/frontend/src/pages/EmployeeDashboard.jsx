@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import DashboardLayout from "../components/DashboardLayout.jsx";
+import "../styles/employee.css";
 import { useNavigate } from "react-router-dom";
 import Logo from "../components/Logo.jsx";
 import Icon from "../components/Icons.jsx";
@@ -31,24 +33,51 @@ import {
   Courses, Gaps, Mentorship, MyLearning, Certificates, MyProgress, Notifications, Overview, Profile, Reports, Results, slug,
 } from "./employee/Pages.jsx";
 
-const NAV_ITEMS = [
-  { id: "overview", label: "Dashboard", icon: "dashboard" },
-  { id: "profile", label: "My Profile Management", icon: "user" },
-  { id: "skills", label: "My Skills & Evidence", icon: "clipboard" },
-  { id: "assessment", label: "Skill Assessment", icon: "target" },
-  { id: "gaps", label: "My Skill Gaps", icon: "chart" },
-  { id: "recommendations", label: "Learning Recommendations", icon: "sparkles", tag: "AI" },
-  { id: "learning", label: "My Learning", icon: "book" },
-  { id: "mentors", label: "Mentors Directory", icon: "users" },
-  { id: "mentorship-requests", label: "Mentorship Requests", icon: "clipboard" },
-  { id: "chat", label: "Messages / Chatbox", icon: "message" },
-  { id: "knowledge", label: "Knowledge Hub", icon: "book" },
-  { id: "forum", label: "Discussion Forum", icon: "message" },
-  { id: "progress", label: "My Progress", icon: "trending" },
-  { id: "certificates", label: "Certificates", icon: "award" },
-  { id: "notifications", label: "Notifications", icon: "bell" },
-  { id: "support", label: "Help & Support", icon: "help" },
+export const NAV_GROUPS = [
+  {
+    category: "Core",
+    items: [
+      { id: "overview", label: "Dashboard", icon: "dashboard" },
+      { id: "profile", label: "My Profile Management", icon: "user" },
+    ],
+  },
+  {
+    category: "Skills & Intelligence",
+    items: [
+      { id: "skills", label: "My Skills & Evidence", icon: "clipboard" },
+      { id: "assessment", label: "Skill Assessment", icon: "target" },
+      { id: "gaps", label: "My Skill Gaps", icon: "chart" },
+    ],
+  },
+  {
+    category: "Learning & Progress",
+    items: [
+      { id: "recommendations", label: "Learning Recommendations", icon: "sparkles", tag: "AI" },
+      { id: "learning", label: "My Learning", icon: "book" },
+      { id: "progress", label: "My Progress", icon: "trending" },
+      { id: "certificates", label: "Certificates", icon: "award" },
+    ],
+  },
+  {
+    category: "Mentorship & Community",
+    items: [
+      { id: "mentors", label: "Mentors Directory", icon: "users" },
+      { id: "mentorship-requests", label: "Mentorship Requests", icon: "clipboard" },
+      { id: "chat", label: "Messages / Chatbox", icon: "message" },
+      { id: "knowledge", label: "Knowledge Hub", icon: "book" },
+      { id: "forum", label: "Discussion Forum", icon: "message" },
+    ],
+  },
+  {
+    category: "Platform & Support",
+    items: [
+      { id: "notifications", label: "Notifications", icon: "bell" },
+      { id: "support", label: "Help & Support", icon: "help" },
+    ],
+  },
 ];
+
+export const NAV_ITEMS = NAV_GROUPS.flatMap((g) => g.items);
 
 const storageKey = (id) => `skillsphere.employee.${id}`;
 function loadSaved(id) {
@@ -360,54 +389,18 @@ export default function EmployeeDashboard() {
   const pageTitle = activePage === "results" ? "Assessment Results" : NAV_ITEMS.find((n) => n.id === activeNav)?.label || "Workspace";
 
   return (
-    <div className="employee-app">
-      <aside className="employee-sidebar">
-        <div className="sidebar-brand">
-          <Logo />
-          <span>EMPLOYEE WORKSPACE</span>
-        </div>
-        <nav aria-label="Employee navigation">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              className={`nav-item ${activeNav === item.id ? "is-active" : ""}`}
-              aria-current={activeNav === item.id ? "page" : undefined}
-              onClick={() => goTo(item.id)}
-            >
-              <Icon name={item.icon} size={18} />
-              <span className="nav-label">{item.label}</span>
-              {item.tag && <em className="nav-tag">{item.tag}</em>}
-            </button>
-          ))}
-        </nav>
-        <div className="sidebar-bottom">
-          <span className="sidebar-avatar">{(user.fullName || "E").slice(0, 1).toUpperCase()}</span>
-          <div>
-            <strong>{user.fullName}</strong>
-            <small>{user.email}</small>
-          </div>
-          <button className="sidebar-signout" onClick={onSignOut} aria-label="Sign out" title="Sign out">
-            <Icon name="logout" size={18} />
-          </button>
-        </div>
-      </aside>
-
-      <main className="employee-main">
-        <header className="employee-topbar">
-          <div>
-            <span className="mobile-brand">SkillSphere</span>
-            <span className="topbar-title">{pageTitle}</span>
-          </div>
-          <div className="topbar-user">
-            <span className="badge">Employee</span>
-            <span className="topbar-name">{user.fullName}</span>
-            <NotificationsPopover />
-            <button className="btn btn--ghost" onClick={onSignOut}>Sign out</button>
-          </div>
-        </header>
-
-        <div className="employee-content">
-          {feedbackMsg && <Alert type="success">{feedbackMsg}</Alert>}
+    <DashboardLayout
+      role="EMPLOYEE"
+      roleLabel="EMPLOYEE WORKSPACE"
+      user={user}
+      activeTab={activeNav}
+      onSelectTab={goTo}
+      navGroups={NAV_GROUPS}
+      onSignOut={onSignOut}
+      pageTitle={pageTitle}
+    >
+      <div className="employee-content" style={{ maxWidth: "100%", padding: 0 }}>
+        {feedbackMsg && <Alert type="success">{feedbackMsg}</Alert>}
 
           {/* Module 1: Dashboard */}
           {activePage === "overview" && <Overview {...shared} />}
@@ -682,8 +675,7 @@ export default function EmployeeDashboard() {
           <p className="demo-disclaimer">
             Live Spring Boot API, PostgreSQL and Gemini AI Recommendations fully connected.
           </p>
-        </div>
-      </main>
-    </div>
+              </div>
+    </DashboardLayout>
   );
 }

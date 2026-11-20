@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import DashboardLayout from "../components/DashboardLayout.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import Logo from "../components/Logo.jsx";
 import Icon from "../components/Icons.jsx";
@@ -20,18 +21,35 @@ import DepartmentReportsAnalyticsView from "./department-head/DepartmentReportsA
 import DepartmentAnnouncementsView from "./department-head/DepartmentAnnouncementsView.jsx";
 import DepartmentNotificationsView from "./department-head/DepartmentNotificationsView.jsx";
 
-const NAV_ITEMS = [
-  { id: "overview", label: "Executive Dashboard", icon: "dashboard", path: "dashboard" },
-  { id: "department", label: "Department & Teams", icon: "users", path: "overview" },
-  { id: "skill-matrix", label: "Skill Matrix", icon: "clipboard", path: "skill-matrix" },
-  { id: "heatmap", label: "Gap Heatmap", icon: "chart", path: "heatmap" },
-  { id: "capability", label: "Workforce Capability", icon: "award", path: "capability" },
-  { id: "learning-mentoring", label: "Learning & Mentoring", icon: "book", path: "learning-mentoring" },
-  { id: "risks", label: "Risk & Priority Alerts", icon: "alert", path: "risks" },
-  { id: "reports", label: "Reports & Analytics", icon: "file", path: "reports" },
-  { id: "announcements", label: "Communications", icon: "message", path: "announcements" },
-  { id: "notifications", label: "Notifications", icon: "bell", path: "notifications" },
+export const DH_NAV_GROUPS = [
+  {
+    category: "Strategic Overview",
+    items: [
+      { id: "overview", label: "Executive Dashboard", icon: "dashboard", path: "overview" },
+      { id: "department", label: "Department & Teams", icon: "users", path: "department" },
+      { id: "capability", label: "Workforce Capability", icon: "award", path: "capability" },
+    ],
+  },
+  {
+    category: "Competency Matrix & Heatmap",
+    items: [
+      { id: "skill-matrix", label: "Skill Matrix", icon: "clipboard", path: "skill-matrix" },
+      { id: "heatmap", label: "Gap Heatmap", icon: "chart", path: "heatmap" },
+      { id: "risks", label: "Risk & Priority Alerts", icon: "alert", path: "risks" },
+    ],
+  },
+  {
+    category: "Development & Governance",
+    items: [
+      { id: "learning-mentoring", label: "Learning & Mentoring", icon: "book", path: "learning-mentoring" },
+      { id: "reports", label: "Reports & Analytics", icon: "file", path: "reports" },
+      { id: "announcements", label: "Communications", icon: "message", path: "announcements" },
+      { id: "notifications", label: "Notifications", icon: "bell", path: "notifications" },
+    ],
+  },
 ];
+
+export const NAV_ITEMS = DH_NAV_GROUPS.flatMap((g) => g.items);
 
 export default function DepartmentHeadDashboard() {
   const { user, signOut } = useAuth();
@@ -74,68 +92,18 @@ export default function DepartmentHeadDashboard() {
   const activeItem = NAV_ITEMS.find((n) => n.id === activeTab) || NAV_ITEMS[0];
 
   return (
-    <div className="dh-app">
-      {/* Sidebar */}
-      <aside className="dh-sidebar">
-        <div className="sidebar-brand">
-          <Logo size="small" />
-          <span className="dh-badge">Dept Head</span>
-        </div>
-
-        <nav className="dh-nav">
-          {NAV_ITEMS.map((item) => {
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                className={`dh-nav-item ${isActive ? "active" : ""}`}
-                onClick={() => handleSelectTab(item.id)}
-              >
-                <Icon name={item.icon} size={16} />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
-        </nav>
-
-        {/* User Footer */}
-        <div className="dh-user-footer">
-          <div className="dh-user-meta">
-            <span className="dh-user-name" title={user?.fullName || user?.email}>
-              {user?.fullName || "Department Executive"}
-            </span>
-            <span className="dh-user-dept">
-              {user?.department || "Department Head"}
-            </span>
-          </div>
-          <button className="dh-logout-btn" onClick={handleSignOut} title="Sign Out">
-            <Icon name="logout" size={14} />
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="dh-main">
-        {/* Top Header */}
-        <header className="dh-header">
-          <div className="dh-title-area">
-            <h1>{activeItem.label}</h1>
-            <p className="dh-subtitle">
-              Strategic Capability, Risk & Workforce Intelligence
-            </p>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-            <div className="dh-dept-pill">
-              <Icon name="shield" size={16} />
-              <span>{user?.department || "Executive Leadership"}</span>
-            </div>
-            <NotificationsPopover />
-          </div>
-        </header>
-
+    <DashboardLayout
+      role="DEPARTMENT_HEAD"
+      roleLabel="DEPARTMENT HEAD LEADERSHIP"
+      user={user}
+      activeTab={activeTab}
+      onSelectTab={handleSelectTab}
+      navGroups={DH_NAV_GROUPS}
+      onSignOut={handleSignOut}
+      pageTitle={activeItem ? activeItem.label : "Department Head"}
+    >
+      <div className="dh-content" style={{ maxWidth: "100%", padding: 0 }}>
         {/* Subviews Container */}
-        <div className="dh-content">
           {activeTab === "overview" && (
             <DepartmentHeadDashboardOverviewView onNavigateTab={handleSelectTab} />
           )}
@@ -152,8 +120,7 @@ export default function DepartmentHeadDashboard() {
           {activeTab === "reports" && <DepartmentReportsAnalyticsView />}
           {activeTab === "announcements" && <DepartmentAnnouncementsView />}
           {activeTab === "notifications" && <DepartmentNotificationsView />}
-        </div>
-      </main>
-    </div>
+              </div>
+    </DashboardLayout>
   );
 }

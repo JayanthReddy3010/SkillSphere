@@ -1,5 +1,6 @@
 import React from "react";
 import Icon from "../../components/Icons.jsx";
+import KpiCard from "../../components/KpiCard.jsx";
 
 export default function DashboardOverviewView({
   overview,
@@ -53,44 +54,60 @@ export default function DashboardOverviewView({
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="mentor-kpi-grid">
-        <div className="mentor-kpi-card" onClick={() => onNavigateTab("mentees")} style={{ cursor: "pointer" }}>
-          <span className="mentor-kpi-label">Active Mentees</span>
-          <span className="mentor-kpi-value">{activeMenteesCount}</span>
-          <span className="mentor-kpi-sub">Currently paired mentees</span>
-        </div>
-        <div className="mentor-kpi-card" onClick={() => onNavigateTab("requests")} style={{ cursor: "pointer" }}>
-          <span className="mentor-kpi-label">Pending Requests</span>
-          <span className="mentor-kpi-value" style={{ color: pendingRequestsCount > 0 ? "#2563eb" : "inherit" }}>
-            {pendingRequestsCount}
-          </span>
-          <span className="mentor-kpi-sub">Awaiting your response</span>
-        </div>
-        <div className="mentor-kpi-card" onClick={() => onNavigateTab("sessions")} style={{ cursor: "pointer" }}>
-          <span className="mentor-kpi-label">Completed Sessions</span>
-          <span className="mentor-kpi-value" style={{ color: "#16a34a" }}>{completedSessionsCount}</span>
-          <span className="mentor-kpi-sub">{upcomingSessionsCount} upcoming scheduled</span>
-        </div>
-        <div className="mentor-kpi-card" onClick={() => onNavigateTab("goals")} style={{ cursor: "pointer" }}>
-          <span className="mentor-kpi-label">Goal Completion Rate</span>
-          <span className="mentor-kpi-value">{goalCompletionRate}%</span>
-          <span className="mentor-kpi-sub">Milestones achieved</span>
-        </div>
-        <div className="mentor-kpi-card" onClick={() => onNavigateTab("resources")} style={{ cursor: "pointer" }}>
-          <span className="mentor-kpi-label">Shared Resources</span>
-          <span className="mentor-kpi-value">{sharedResourcesCount}</span>
-          <span className="mentor-kpi-sub">Curated docs & repos</span>
-        </div>
-        <div className="mentor-kpi-card" onClick={() => onNavigateTab("contributions")} style={{ cursor: "pointer" }}>
-          <span className="mentor-kpi-label">Knowledge Articles</span>
-          <span className="mentor-kpi-value" style={{ color: "#7e22ce" }}>{knowledgeArticlesCount}</span>
-          <span className="mentor-kpi-sub">Published best practices</span>
-        </div>
+      {/* Standardized KPI Cards Grid */}
+      <div className="dash-kpi-grid">
+        <KpiCard
+          title="Active Mentees"
+          value={activeMenteesCount}
+          subtext="Currently paired mentees"
+          icon="users"
+          colorVariant="primary"
+          onClick={() => onNavigateTab("mentees")}
+        />
+        <KpiCard
+          title="Pending Requests"
+          value={pendingRequestsCount}
+          subtext="Awaiting your response"
+          icon="clipboard"
+          colorVariant={pendingRequestsCount > 0 ? "blue" : "primary"}
+          onClick={() => onNavigateTab("requests")}
+        />
+        <KpiCard
+          title="Completed Sessions"
+          value={completedSessionsCount}
+          subtext={`${upcomingSessionsCount} upcoming scheduled`}
+          icon="clock"
+          colorVariant="emerald"
+          onClick={() => onNavigateTab("sessions")}
+        />
+        <KpiCard
+          title="Goal Completion Rate"
+          value={`${goalCompletionRate}%`}
+          subtext="Milestones achieved"
+          icon="target"
+          colorVariant="indigo"
+          onClick={() => onNavigateTab("goals")}
+        />
+        <KpiCard
+          title="Shared Resources"
+          value={sharedResourcesCount}
+          subtext="Curated docs & repos"
+          icon="book"
+          colorVariant="blue"
+          onClick={() => onNavigateTab("resources")}
+        />
+        <KpiCard
+          title="Knowledge Articles"
+          value={knowledgeArticlesCount}
+          subtext="Published best practices"
+          icon="award"
+          colorVariant="amber"
+          onClick={() => onNavigateTab("contributions")}
+        />
       </div>
 
       {/* Main Split Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: "20px" }}>
+      <div className="dash-grid-2col">
         {/* Upcoming Mentoring Sessions */}
         <div className="mentor-panel">
           <div className="mentor-panel-header">

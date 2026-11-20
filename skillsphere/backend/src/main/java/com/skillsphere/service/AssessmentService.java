@@ -765,7 +765,7 @@ public class AssessmentService {
         return result;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<SkillGapDto> getUserGaps(String email) {
         User user = getUserByEmail(email);
         List<SkillGap> gaps = skillGapRepository.findByUserId(user.getId());

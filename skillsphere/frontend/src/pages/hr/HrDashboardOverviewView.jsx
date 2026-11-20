@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Icon from "../../components/Icons.jsx";
 import Alert from "../../components/Alert.jsx";
+import KpiCard from "../../components/KpiCard.jsx";
 import { getHrOverview } from "../../services/hrService.js";
 
 export default function HrDashboardOverviewView({ onNavigateTab }) {
@@ -41,63 +42,39 @@ export default function HrDashboardOverviewView({ onNavigateTab }) {
   return (
     <div>
       {/* Stat Grid */}
-      <div className="hr-stat-grid">
-        <div className="hr-stat-card">
-          <div className="hr-stat-header">
-            <span>Total Workforce</span>
-            <div className="hr-stat-icon primary">
-              <Icon name="users" size={18} />
-            </div>
-          </div>
-          <div className="hr-stat-value">{data?.totalEmployees ?? 0}</div>
-          <div className="hr-stat-meta">Active employees registered</div>
-        </div>
-
-        <div className="hr-stat-card">
-          <div className="hr-stat-header">
-            <span>Skill Coverage</span>
-            <div className="hr-stat-icon emerald">
-              <Icon name="target" size={18} />
-            </div>
-          </div>
-          <div className="hr-stat-value">{data?.skillCoveragePercentage ?? 0}%</div>
-          <div className="hr-stat-meta">
-            {data?.assessedEmployeesCount ?? 0} assessed / {data?.unassessedEmployeesCount ?? 0} unassessed
-          </div>
-        </div>
-
-        <div className="hr-stat-card">
-          <div className="hr-stat-header">
-            <span>Critical Shortages</span>
-            <div className="hr-stat-icon rose">
-              <Icon name="alert-triangle" size={18} />
-            </div>
-          </div>
-          <div className="hr-stat-value">{data?.criticalShortagesCount ?? 0}</div>
-          <div className="hr-stat-meta">{data?.totalOrgGapsCount ?? 0} total gaps tracked</div>
-        </div>
-
-        <div className="hr-stat-card">
-          <div className="hr-stat-header">
-            <span>Active Programmes</span>
-            <div className="hr-stat-icon blue">
-              <Icon name="calendar" size={18} />
-            </div>
-          </div>
-          <div className="hr-stat-value">{data?.activeProgrammesCount ?? 0}</div>
-          <div className="hr-stat-meta">{data?.totalCoursesCount ?? 0} catalogue courses</div>
-        </div>
-
-        <div className="hr-stat-card">
-          <div className="hr-stat-header">
-            <span>Course Completion</span>
-            <div className="hr-stat-icon amber">
-              <Icon name="trending" size={18} />
-            </div>
-          </div>
-          <div className="hr-stat-value">{data?.avgCompletionRate ?? 0}%</div>
-          <div className="hr-stat-meta">{data?.totalEnrollmentsCount ?? 0} total enrollments</div>
-        </div>
+      <div className="dash-kpi-grid">
+        <KpiCard
+          title="Total Workforce"
+          value={data?.totalEmployees ?? 0}
+          icon="users"
+          meta="Active employees registered"
+        />
+        <KpiCard
+          title="Skill Coverage"
+          value={`${data?.skillCoveragePercentage ?? 0}%`}
+          icon="target"
+          meta={`${data?.assessedEmployeesCount ?? 0} assessed / ${data?.unassessedEmployeesCount ?? 0} unassessed`}
+        />
+        <KpiCard
+          title="Critical Shortages"
+          value={data?.criticalShortagesCount ?? 0}
+          icon="alert-triangle"
+          meta={`${data?.totalOrgGapsCount ?? 0} total gaps tracked`}
+          trend={data?.criticalShortagesCount > 0 ? "Requires Attention" : "Optimal"}
+          trendUp={data?.criticalShortagesCount === 0}
+        />
+        <KpiCard
+          title="Active Programmes"
+          value={data?.activeProgrammesCount ?? 0}
+          icon="calendar"
+          meta={`${data?.totalCoursesCount ?? 0} catalogue courses`}
+        />
+        <KpiCard
+          title="Course Completion"
+          value={`${data?.avgCompletionRate ?? 0}%`}
+          icon="trending"
+          meta={`${data?.totalEnrollmentsCount ?? 0} total enrollments`}
+        />
       </div>
 
       {/* Pending Actions Alert Card */}
@@ -140,7 +117,7 @@ export default function HrDashboardOverviewView({ onNavigateTab }) {
       )}
 
       {/* Grid: Upcoming Training & Recent Activities */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "24px" }}>
+      <div className="dash-grid-2col">
         {/* Upcoming Programmes */}
         <div className="hr-card">
           <div className="hr-card-header">

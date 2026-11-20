@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skillsphere.config.SecurityConfig;
 import com.skillsphere.dto.StartAssessmentRequest;
 import com.skillsphere.security.JsonErrorWriter;
+import com.skillsphere.exception.GlobalExceptionHandler;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import com.skillsphere.service.AssessmentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AssessmentController.class)
-@Import({SecurityConfig.class, JsonErrorWriter.class})
+@Import({SecurityConfig.class, JsonErrorWriter.class, GlobalExceptionHandler.class})
 @TestPropertySource(properties = {
         "app.cors.allowed-origins=http://localhost:5173"
 })
@@ -167,6 +170,43 @@ class AssessmentControllerSecurityTest {
     @WithMockUser(username = "hr@example.com", roles = "HR_SPECIALIST")
     void testGetOrgSkillGaps_HrSpecialist_ReturnsOk() throws Exception {
         mockMvc.perform(get("/api/assessments/gaps/organization"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("SS-BE-001: Authenticated EMPLOYEE can access getMySkillGaps (HTTP 200)")
+    @WithMockUser(username = "emp@example.com", roles = "EMPLOYEE")
+    void testGetMySkillGaps_AuthenticatedEmployee_ReturnsOk() throws Exception {
+        mockMvc.perform(get("/api/assessments/my-gaps"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("SS-BE-002: Alphabetic path variable triggers MethodArgumentTypeMismatchException and returns HTTP 400 with ApiError")
+    @WithMockUser(username = "emp@example.com", roles = "EMPLOYEE")
+    void testTypeMismatch_AlphabeticPathVariable_ReturnsBadRequestWithApiError() throws Exception {
+        mockMvc.perform(get("/api/assessments/not-a-number"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Parameter 'id' must be of type Long."))
+                .andExpect(jsonPath("$.fieldErrors.id").value("Invalid value format"))
+                .andExpect(jsonPath("$.path").value("/api/assessments/not-a-number"));
+    }
+
+    @Test
+    @DisplayName("SS-BE-002: Valid numeric path variable passes to controller and returns HTTP 200")
+    @WithMockUser(username = "emp@example.com", roles = "EMPLOYEE")
+    void testTypeMismatch_ValidNumericPathVariable_ReturnsOk() throws Exception {
+        mockMvc.perform(get("/api/assessments/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("SS-BE-002: Negative numeric path variable is accepted as Long and passes to controller")
+    @WithMockUser(username = "emp@example.com", roles = "EMPLOYEE")
+    void testTypeMismatch_NegativeNumericPathVariable_PassesToController() throws Exception {
+        mockMvc.perform(get("/api/assessments/-1"))
                 .andExpect(status().isOk());
     }
 }
