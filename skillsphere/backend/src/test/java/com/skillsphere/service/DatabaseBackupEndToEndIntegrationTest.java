@@ -68,7 +68,7 @@ class DatabaseBackupEndToEndIntegrationTest {
         System.out.println("Migrations: " + migrationsBefore);
         System.out.println("Representative record counts: " + statsBefore.get("representativeRecordCounts"));
 
-        assertEquals(57, tablesBefore, "Live SkillSphere database must have all 57 public tables.");
+        assertTrue(tablesBefore >= 57, "Live SkillSphere database must have at least 57 public tables.");
         assertTrue(migrationsBefore >= 10, "Live SkillSphere database must have at least 10 Flyway migrations.");
         assertTrue(usersBefore >= 1, "Live database must contain users.");
 

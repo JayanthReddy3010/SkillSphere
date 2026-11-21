@@ -48,6 +48,9 @@ export const login = (payload) => api.post("/api/auth/login", payload).then((r) 
 export const logout = () => api.post("/api/auth/logout").then((r) => r.data);
 export const getMe = () => api.get("/api/auth/me").then((r) => r.data);
 export const forgotPassword = (email) => api.post("/api/auth/forgot-password", { email }).then((r) => r.data);
+export const requestOtp = (email) => api.post("/api/auth/forgot-password", { email }).then((r) => r.data);
+export const resendOtp = (email) => api.post("/api/auth/resend-otp", { email }).then((r) => r.data);
+export const verifyOtp = (payload) => api.post("/api/auth/verify-otp", payload).then((r) => r.data);
 export const resetPassword = (payload) => api.post("/api/auth/reset-password", payload).then((r) => r.data);
 
 export const getDashboard = (role) => api.get(`/api/dashboard/${role.toLowerCase()}`).then((r) => r.data);

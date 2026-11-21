@@ -56,9 +56,22 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public MessageResponse forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        passwordResetService.requestReset(request.email());
-        return new MessageResponse("If an account exists for that email, a reset link is on its way.");
+    public MessageResponse forgotPassword(@Valid @RequestBody ForgotPasswordRequest request,
+                                          HttpServletRequest httpRequest) {
+        passwordResetService.requestResetOtp(request.email(), getClientIp(httpRequest));
+        return new MessageResponse("If an account exists for that email, a 6-digit verification code has been sent.");
+    }
+
+    @PostMapping("/resend-otp")
+    public MessageResponse resendOtp(@Valid @RequestBody ResendOtpRequest request,
+                                     HttpServletRequest httpRequest) {
+        passwordResetService.resendOtp(request.email(), getClientIp(httpRequest));
+        return new MessageResponse("If an account exists for that email, a fresh 6-digit verification code has been sent.");
+    }
+
+    @PostMapping("/verify-otp")
+    public VerifyOtpResponse verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
+        return passwordResetService.verifyOtp(request.email(), request.otp());
     }
 
     @PostMapping("/reset-password")
@@ -75,5 +88,14 @@ public class AuthController {
         }
         userService.changePassword(authentication.getName(), request);
         return new MessageResponse("Password updated successfully.");
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        if (request == null) return "unknown";
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isBlank()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

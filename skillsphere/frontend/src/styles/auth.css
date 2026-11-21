@@ -238,3 +238,86 @@ a:hover { text-decoration: underline; }
   .spinner { border-top-color: #fff; }
   * { transition: none !important; }
 }
+
+/* ----- OTP & Forgot Password Multi-Step Enhancements ----- */
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--blue);
+  background: var(--blue-tint);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  margin-bottom: 8px;
+}
+
+.otp-field input {
+  font-family: 'Courier New', Courier, monospace, sans-serif;
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 10px !important;
+  text-align: center !important;
+  padding: 12px 14px !important;
+  color: var(--navy);
+  border: 2px solid var(--border);
+}
+
+.otp-field input:focus {
+  border-color: var(--blue);
+}
+
+.otp-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+
+.otp-timer {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.otp-timer strong {
+  color: var(--navy);
+}
+
+.btn--resend {
+  background: transparent;
+  border: none;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.btn--resend:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.success-card {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.success-icon-wrap {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  background: var(--success-tint);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--success);
+}
