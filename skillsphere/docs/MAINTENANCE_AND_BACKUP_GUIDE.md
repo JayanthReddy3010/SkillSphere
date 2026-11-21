@@ -47,7 +47,7 @@ SELECT count(*), state FROM pg_stat_activity WHERE datname = 'skillsphere_db' GR
 
 ## 2. Backup Management Architecture
 
-SkillSphere incorporates a native backup orchestrator in [`DatabaseBackupService.java`](file:///C:/Users/gjaya/OneDrive/Desktop/SkillSphere/skillsphere/backend/src/main/java/com/skillsphere/service/DatabaseBackupService.java) that executes PostgreSQL command-line utilities via `ProcessBuilder`.
+SkillSphere incorporates a native backup orchestrator in [`DatabaseBackupService.java`](../backend/src/main/java/com/skillsphere/service/DatabaseBackupService.java) that executes PostgreSQL command-line utilities via `ProcessBuilder`.
 
 ```mermaid
 graph TD

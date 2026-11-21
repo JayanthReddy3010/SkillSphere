@@ -52,7 +52,7 @@ The following records were generated during Phase 6 end-to-end workflow verifica
   - Skill ID 6 (Git): `current_level=1`, `required_level=3`, `gap_size=2`, Priority: `HIGH`.
   - Skill ID 7 (Docker): `current_level=1`, `required_level=4`, `gap_size=3`, Priority: `HIGH`.
   - Skill ID 8 (Kubernetes): `current_level=1`, `required_level=4`, `gap_size=3`, Priority: `HIGH`.
-- **Origin & Purpose:** Dynamically calculated by [`AssessmentService.java`](file:///C:/Users/gjaya/OneDrive/Desktop/SkillSphere/skillsphere/backend/src/main/java/com/skillsphere/service/AssessmentService.java#L768-L776) under the repaired `@Transactional` boundary (`SS-BE-001`).
+- **Origin & Purpose:** Dynamically calculated by [`AssessmentService.java`](../backend/src/main/java/com/skillsphere/service/AssessmentService.java) under the repaired `@Transactional` boundary (`SS-BE-001`).
 - **Classification:** **Verification Test Record (Safe to Retain).**
 
 ### 2.5 Automated Test User Accounts

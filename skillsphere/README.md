@@ -5,8 +5,8 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.4-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Tests](https://img.shields.io/badge/Tests-404%20Passing-brightgreen?style=for-the-badge&logo=junit5&logoColor=white)]()
-[![Status](https://img.shields.io/badge/Status-100%25%20Production%20Ready-success?style=for-the-badge)]()
+[![Tests](https://img.shields.io/badge/Tests-438%20Passing-brightgreen?style=for-the-badge&logo=junit5&logoColor=white)]()
+[![Status](https://img.shields.io/badge/Status-Deployment%20Ready-success?style=for-the-badge)]()
 
 **SkillSphere** is an enterprise-grade Organizational Knowledge Gap Intelligence Platform developed under the **Infosys Springboard Virtual Internship 7.0**. The platform dynamically identifies workforce competency deficits, computes empirical skill gaps against job-role benchmarks, visualizes multi-tier competency heatmaps, and provides AI-guided learning pathways alongside structured 1-on-1 expert mentorship.
 
@@ -18,7 +18,7 @@
 - **Six Specialized Role Workspaces:** Dedicated dashboards for `EMPLOYEE`, `MANAGER`, `MENTOR`, `HR_SPECIALIST`, `DEPARTMENT_HEAD`, and `ADMIN`.
 - **Enterprise Security:** Stateful session management (`JSESSIONID`, HttpOnly, SameSite=Lax), BCrypt-12 password hashing, double-submit CSRF protection (`X-XSRF-TOKEN`), and strict method-level `@PreAuthorize` authorization (96/96 passing RBAC matrix assertions).
 - **Google Gemini Generative AI:** Intelligent course recommendations and assessment authoring, backed by a deterministic database fallback.
-- **Relational Integrity:** 57 PostgreSQL tables governed by 11 Flyway migrations under strict Hibernate schema validation (`ddl-auto: validate`).
+- **Relational Integrity:** 58 PostgreSQL tables governed by 12 Flyway migrations under strict Hibernate schema validation (`ddl-auto: validate`).
 - **Disaster Recovery:** Native PostgreSQL backup orchestrator (`pg_dump`) paired with non-destructive isolated sandbox restore verification (`pg_restore`).
 
 ---
@@ -30,14 +30,14 @@
 | **Backend Runtime** | Java Development Kit (LTS) | OpenJDK 21.0.6 (64-Bit Server VM) |
 | **Backend Framework** | Spring Boot | 3.3.5 (Web, Data JPA, Security, Validation) |
 | **Security Engine** | Spring Security | 6.3.4 (Method-level RBAC, CSRF token, Session) |
-| **Database Engine** | Native PostgreSQL | 18.4 (Port 5432, 57 tables, 103 FKs, 126 indexes) |
-| **Schema Governance**| Flyway Core | 10.10.0 (Sequential migrations V1–V11) |
+| **Database Engine** | Native PostgreSQL | 18.4 (Port 5432, 58 tables, 104 FKs, 129 indexes) |
+| **Schema Governance**| Flyway Core | 10.10.0 (Sequential migrations V1–V12) |
 | **ORM / Dialect** | Hibernate ORM | 6.5.3.Final (`hibernate.ddl-auto: validate`) |
 | **Frontend Framework**| React | 18.3.1 (Single Page Application architecture) |
 | **Frontend Build Tool**| Vite | 5.4.21 (Production build in 2.52s, 0 errors) |
 | **Styling & UI** | Tailwind CSS + Custom CSS3 | Modern enterprise glassmorphic design system |
 | **AI Integration** | Google Gemini API | `gemini-3.5-flash` model with rule fallback |
-| **Automated Tests** | JUnit 5 / Mockito / AssertJ | **404 / 404 tests passing** (100.0%) |
+| **Automated Tests** | JUnit 5 / Mockito / AssertJ | **438 / 438 tests passing** (100.0%) |
 
 ---
 
@@ -50,8 +50,8 @@ skillsphere/
 │   ├── .env.example                     # Backend environment configuration template
 │   └── src/
 │       ├── main/java/com/skillsphere/   # 23 Controllers, Services, Entities, DTOs
-│       ├── main/resources/db/migration/ # Flyway SQL migrations V1 through V11
-│       └── test/java/com/skillsphere/   # 404 Automated unit & integration tests
+│       ├── main/resources/db/migration/ # Flyway SQL migrations V1 through V12
+│       └── test/java/com/skillsphere/   # 438 Automated unit & integration tests
 ├── frontend/                            # React 18 / Vite 5 SPA
 │   ├── package.json                     # Node dependencies & Vite build scripts
 │   ├── .env.example                     # Client environment configuration template
@@ -61,10 +61,11 @@ skillsphere/
 │       ├── services/                    # Axios REST client with CSRF interceptors
 │       └── styles/                      # Tailwind & custom glassmorphic stylesheets
 ├── docs/                                # Authoritative platform documentation
+│   ├── final-reports/                   # Final project deliverables (Word .docx & PDF)
 │   ├── README.md                        # Master documentation index
 │   ├── PROJECT_REPORT.md                # Complete 21-section technical project report
 │   ├── ARCHITECTURE.md                  # System architecture & sequence diagrams
-│   ├── DATABASE.md                      # 57 tables, constraints, 126 indexes & ER diagram
+│   ├── DATABASE.md                      # 58 tables, constraints, 129 indexes & ER diagram
 │   ├── API_DOCUMENTATION.md             # 291 REST API endpoints & DTO specifications
 │   ├── TESTING_REPORT.md                # Consolidated testing report (Phases 1–6)
 │   ├── USER_MANUAL.md                   # Operational manual for all six roles
@@ -90,7 +91,7 @@ skillsphere/
 ```powershell
 psql -U postgres -h 127.0.0.1 -p 5432 -c "CREATE DATABASE skillsphere_db;"
 ```
-*(Flyway automatically creates all 57 tables and seeds baseline data on first startup).*
+*(Flyway automatically creates all 58 tables and seeds baseline data on first startup).*
 
 ### 2. Backend Startup
 ```powershell
@@ -128,7 +129,9 @@ The platform includes pre-seeded demonstration accounts for all six organization
 
 ## 6. Complete Documentation Suite
 
-For detailed technical, architectural, and operational specifications, refer to the documents in the [`docs/`](file:///c:/Users/gjaya/OneDrive/Desktop/SkillSphere/skillsphere/docs) directory:
+For detailed technical, architectural, operational, and submission specifications, refer to the documents in the [`docs/`](docs) directory:
+- 🎓 [Final Project Word Report (Submission Deliverable)](docs/final-reports/SkillSphere_Complete_Project_Documentation.docx)
+- 📑 [Final Project PDF Report (Submission Deliverable)](docs/final-reports/SkillSphere_Complete_Project_Documentation.pdf)
 - 📖 [Project Report](docs/PROJECT_REPORT.md)
 - 🏗️ [Architecture Specification](docs/ARCHITECTURE.md)
 - 🗄️ [Database Schema & ER Diagram](docs/DATABASE.md)
