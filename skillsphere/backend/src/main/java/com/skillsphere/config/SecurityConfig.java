@@ -69,7 +69,7 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.GET, "/api/auth/csrf").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/auth/csrf", "/api/health").permitAll()
                 .requestMatchers(HttpMethod.POST,
                         "/api/auth/register",
                         "/api/auth/login",

@@ -31,14 +31,15 @@ spring:
           writetimeout: 5000
 
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${PORT:${SERVER_PORT:8080}}
+  address: ${SERVER_ADDRESS:0.0.0.0}
   servlet:
     session:
       timeout: 30m
       cookie:
         http-only: true
-        same-site: lax
-        secure: ${COOKIE_SECURE:false}   # set true when served over HTTPS
+        same-site: ${SESSION_COOKIE_SAME_SITE:lax}
+        secure: ${SESSION_COOKIE_SECURE:${COOKIE_SECURE:false}}   # set true when served over HTTPS
 
 app:
   frontend-url: ${FRONTEND_URL:http://localhost:5173}
@@ -72,7 +73,7 @@ app:
     full-name: ${ADMIN_FULL_NAME:SkillSphere Administrator}
   backup:
     directory: ${BACKUP_DIR:backups}
-    postgres-bin-path: ${PG_BIN_PATH:D:\PostgreSQL\18\bin}
+    postgres-bin-path: ${PG_BIN_PATH:}
     max-retained: ${BACKUP_MAX_RETAINED:15}
     timeout-minutes: ${BACKUP_TIMEOUT_MINUTES:5}
 

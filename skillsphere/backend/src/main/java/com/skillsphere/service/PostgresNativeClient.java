@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -54,7 +55,7 @@ public class PostgresNativeClient {
     public record HostPortDb(String host, int port, String database) {}
 
     public PostgresNativeClient(
-            @Value("${app.backup.postgres-bin-path:D:\\PostgreSQL\\18\\bin}") String postgresBinPath,
+            @Value("${app.backup.postgres-bin-path:}") String postgresBinPath,
             @Value("${spring.datasource.url:jdbc:postgresql://127.0.0.1:5432/skillsphere_db}") String datasourceUrl,
             @Value("${spring.datasource.username:postgres}") String dbUser,
             @Value("${spring.datasource.password:}") String dbPassword) {
@@ -108,16 +109,29 @@ public class PostgresNativeClient {
      * Resolves the full executable path for the given PostgreSQL utility.
      */
     public String resolveBinary(String utilityName) {
-        Path binDir = Paths.get(postgresBinPath);
-        Path exePath = binDir.resolve(utilityName + ".exe");
-        if (Files.exists(exePath)) {
-            return exePath.toAbsolutePath().toString();
+        if (postgresBinPath != null && !postgresBinPath.trim().isEmpty()) {
+            try {
+                Path binDir = Paths.get(postgresBinPath.trim());
+                Path exePath = binDir.resolve(utilityName + ".exe");
+                if (Files.exists(exePath)) {
+                    return exePath.toAbsolutePath().toString();
+                }
+                Path directPath = binDir.resolve(utilityName);
+                if (Files.exists(directPath)) {
+                    return directPath.toAbsolutePath().toString();
+                }
+            } catch (InvalidPathException e) {
+                log.warn("Invalid postgres-bin-path '{}': {}", postgresBinPath, e.getMessage());
+            }
         }
-        Path directPath = binDir.resolve(utilityName);
-        if (Files.exists(directPath)) {
-            return directPath.toAbsolutePath().toString();
+
+        // On Windows local development, check standard local install if not in PATH
+        Path defaultWinPath = Paths.get("D:\\PostgreSQL\\18\\bin");
+        if (Files.exists(defaultWinPath.resolve(utilityName + ".exe"))) {
+            return defaultWinPath.resolve(utilityName + ".exe").toAbsolutePath().toString();
         }
-        // Fallback to name if in PATH
+
+        // Fallback to utility name directly for system PATH resolution (standard Linux/container convention)
         return utilityName;
     }
 

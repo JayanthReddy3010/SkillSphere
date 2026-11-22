@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
+  baseURL: import.meta.env.VITE_API_BASE_URL || (import.meta.env.DEV ? "http://localhost:8080" : ""),
   withCredentials: true, // send the HttpOnly session cookie
   withXSRFToken: true, // send X-XSRF-TOKEN even though the API is on another port
   xsrfCookieName: "XSRF-TOKEN",
