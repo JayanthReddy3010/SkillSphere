@@ -1,9 +1,13 @@
+
 # Multi-stage Dockerfile for SkillSphere Backend (Java 21)
+
 # Stage 1: Build JAR
 FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /app
+
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
+
 COPY src ./src
 RUN mvn clean package -DskipTests -B
 
@@ -11,11 +15,19 @@ RUN mvn clean package -DskipTests -B
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# Run as non-root user
+# Create non-root user
 RUN addgroup --system spring && adduser --system spring --ingroup spring
-USER spring:spring
 
-COPY --from=build /app/target/skillsphere-backend-*.jar app.jar
+# Create writable upload directory and assign ownership
+RUN mkdir -p /app/uploads \
+    && chown -R spring:spring /app/uploads \
+    && chown spring:spring /app
+
+# Copy application JAR
+COPY --from=build --chown=spring:spring /app/target/skillsphere-backend-*.jar app.jar
+
+# Run as non-root user
+USER spring:spring
 
 ENV PORT=8080
 EXPOSE 8080
