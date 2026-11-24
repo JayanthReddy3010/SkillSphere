@@ -2,7 +2,11 @@
    SkillSphere — HR Specialist Workspace Styles
    ========================================================================= */
 
-.hr-app {
+.hr-app,
+.theme-hr,
+.theme-hr-specialist,
+.dash-app.theme-hr,
+.dash-app.theme-hr-specialist {
   --hr-bg: #f8fafc;
   --hr-card: #ffffff;
   --hr-line: #e2e8f0;
@@ -359,12 +363,14 @@
 .status-pill.neutral { background: #f1f5f9; color: var(--hr-soft); }
 
 /* Buttons */
-.btn-primary {
+.btn-primary,
+.hr-btn-primary,
+.hr-btn--primary {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: var(--hr-primary);
+  background: var(--hr-primary, #7c3aed);
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -374,27 +380,44 @@
   transition: background 0.15s ease;
 }
 
-.btn-primary:hover {
-  background: var(--hr-primary-dark);
+.btn-primary:hover:not(:disabled),
+.hr-btn-primary:hover:not(:disabled),
+.hr-btn--primary:hover:not(:disabled) {
+  background: var(--hr-primary-dark, #6d28d9);
+  color: #ffffff;
 }
 
-.btn-secondary {
+.btn-secondary,
+.hr-btn-secondary,
+.hr-btn--secondary,
+.hr-btn--ghost {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
   background: #ffffff;
-  color: var(--hr-soft);
-  border: 1px solid var(--hr-line);
+  color: var(--hr-soft, #475569);
+  border: 1px solid var(--hr-line, #e2e8f0);
   border-radius: 8px;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover:not(:disabled),
+.hr-btn-secondary:hover:not(:disabled),
+.hr-btn--secondary:hover:not(:disabled),
+.hr-btn--ghost:hover:not(:disabled) {
   background: #f8fafc;
-  color: var(--hr-ink);
+  color: var(--hr-ink, #0f172a);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.hr-btn-primary:disabled,
+.hr-btn-secondary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .btn-sm {

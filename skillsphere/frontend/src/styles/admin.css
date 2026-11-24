@@ -2,7 +2,9 @@
    SkillSphere — System Administrator Workspace Styles
    ========================================================================= */
 
-.adm-app {
+.adm-app,
+.theme-admin,
+.dash-app.theme-admin {
   --adm-bg: #f8fafc;
   --adm-card: #ffffff;
   --adm-line: #e2e8f0;
@@ -190,11 +192,11 @@
   gap: 6px;
   padding: 6px 14px;
   background: #ffffff;
-  border: 1px solid var(--adm-line);
+  border: 1px solid var(--adm-line, #e2e8f0);
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--adm-primary);
+  color: var(--adm-primary, #1e3a8a);
   box-shadow: var(--adm-shadow);
 }
 
@@ -340,36 +342,50 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
+  color: var(--adm-ink, #0f172a);
   transition: all 0.15s;
 }
 
-.adm-btn-primary {
-  background: var(--adm-primary);
+.adm-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.adm-btn-primary,
+.adm-btn--primary {
+  background: var(--adm-primary, #1e3a8a);
   color: #ffffff;
 }
 
-.adm-btn-primary:hover {
-  background: var(--adm-primary-dark);
+.adm-btn-primary:hover:not(:disabled),
+.adm-btn--primary:hover:not(:disabled) {
+  background: var(--adm-primary-dark, #172554);
+  color: #ffffff;
 }
 
-.adm-btn-secondary {
+.adm-btn-secondary,
+.adm-btn--ghost {
   background: #ffffff;
-  color: var(--adm-soft);
-  border: 1px solid var(--adm-line);
+  color: var(--adm-soft, #475569);
+  border: 1px solid var(--adm-line, #e2e8f0);
 }
 
-.adm-btn-secondary:hover {
+.adm-btn-secondary:hover:not(:disabled),
+.adm-btn--ghost:hover:not(:disabled) {
   background: #f8fafc;
-  color: var(--adm-ink);
+  color: var(--adm-ink, #0f172a);
 }
 
-.adm-btn-danger {
-  background: var(--adm-rose);
+.adm-btn-danger,
+.adm-btn--danger {
+  background: var(--adm-rose, #dc2626);
   color: #ffffff;
 }
 
-.adm-btn-danger:hover {
+.adm-btn-danger:hover:not(:disabled),
+.adm-btn--danger:hover:not(:disabled) {
   background: #b91c1c;
+  color: #ffffff;
 }
 
 /* Badges */

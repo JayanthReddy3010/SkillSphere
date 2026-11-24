@@ -183,14 +183,15 @@ a:hover { text-decoration: underline; }
   border: 0; border-radius: 12px; cursor: pointer;
   transition: background .15s, transform .05s, box-shadow .15s;
 }
-.btn--primary { color: #fff; background: var(--blue); box-shadow: 0 10px 22px -10px rgba(37, 99, 235, .8); }
-.btn--primary:hover:not(:disabled) { background: var(--blue-dark); }
+.btn--primary { color: #fff; background: var(--blue, #2563eb); box-shadow: 0 10px 22px -10px rgba(37, 99, 235, .8); }
+.btn--primary:hover:not(:disabled) { background: var(--blue-dark, #1d4ed8); }
 .btn--primary:active:not(:disabled) { transform: translateY(1px); }
 .btn:disabled { opacity: .7; cursor: progress; }
 .btn--link { text-decoration: none; }
 .btn--link:hover { text-decoration: none; }
-.btn--ghost { height: 40px; padding: 0 16px; color: var(--navy); background: #fff; border: 1.5px solid var(--border); }
-.btn--ghost:hover { background: var(--blue-tint); }
+.btn--ghost { height: 40px; padding: 0 16px; color: var(--navy, #0b2545); background: #fff; border: 1.5px solid var(--border, #d3dded); }
+.btn--ghost:hover:not(:disabled) { background: var(--blue-tint, #e8f0fe); color: var(--navy, #0b2545); }
+.btn--complete { color: var(--success, #17754f); background: var(--success-tint, #e6f6ee); border: 1.5px solid #bfe6d2; }
 
 .spinner { width: 18px; height: 18px; border: 2.5px solid rgba(255, 255, 255, .45); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }

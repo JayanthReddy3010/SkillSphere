@@ -2,7 +2,9 @@
    SkillSphere — Department Head Leadership Workspace Styles
    ========================================================================= */
 
-.dh-app {
+.dh-app,
+.theme-department-head,
+.dash-app.theme-department-head {
   --dh-bg: #f8fafc;
   --dh-card: #ffffff;
   --dh-line: #e2e8f0;
@@ -468,27 +470,40 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
+  color: var(--dh-ink, #0f172a);
   transition: all 0.15s;
 }
 
-.dh-btn-primary {
-  background: var(--dh-primary);
+.dh-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.dh-btn-primary,
+.dh-btn--primary {
+  background: var(--dh-primary, #0f766e);
   color: #ffffff;
 }
 
-.dh-btn-primary:hover {
-  background: var(--dh-primary-dark);
+.dh-btn-primary:hover:not(:disabled),
+.dh-btn--primary:hover:not(:disabled) {
+  background: var(--dh-primary-dark, #115e59);
+  color: #ffffff;
 }
 
-.dh-btn-secondary {
+.dh-btn-secondary,
+.dh-btn--secondary,
+.dh-btn--ghost {
   background: #ffffff;
-  color: var(--dh-soft);
-  border: 1px solid var(--dh-line);
+  color: var(--dh-soft, #475569);
+  border: 1px solid var(--dh-line, #e2e8f0);
 }
 
-.dh-btn-secondary:hover {
+.dh-btn-secondary:hover:not(:disabled),
+.dh-btn--secondary:hover:not(:disabled),
+.dh-btn--ghost:hover:not(:disabled) {
   background: #f8fafc;
-  color: var(--dh-ink);
+  color: var(--dh-ink, #0f172a);
 }
 
 /* Modals */

@@ -1,5 +1,7 @@
 /* ===== SkillSphere — Employee workspace ===== */
-.employee-app {
+.employee-app,
+.theme-employee,
+.dash-app.theme-employee {
   --e-bg: #f4f7fb; --e-card: #fff; --e-line: #e2e9f3; --e-ink: #0f2747; --e-soft: #5b6d86; --e-faint: #8795a9;
   --e-blue: #2563eb; --e-blue-d: #1d4ed8; --e-tint: #eaf1ff; --e-ok: #17754f; --e-ok-t: #e6f6ee;
   --e-warn: #8a5a00; --e-warn-t: #fff4d6; --e-bad: #b42318; --e-bad-t: #fde9e7;
@@ -47,12 +49,41 @@
 .text-action:hover { text-decoration: underline; }
 
 /* Buttons */
-.employee-app .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; height: auto; padding: 10px 18px; font-size: .88rem; font-weight: 700; border-radius: 11px; }
-.employee-app .btn--ghost { color: var(--e-ink); }
-.employee-app .btn--complete { color: var(--e-ok); background: var(--e-ok-t); border: 1.5px solid #bfe6d2; box-shadow: none; }
-.employee-app .btn--light { color: #123b7a; background: #fff; box-shadow: 0 8px 20px -10px rgba(0, 0, 0, .45); margin-top: 18px; }
-.employee-app .btn--light:hover { background: #eef4ff; }
-.employee-app .btn:disabled { cursor: not-allowed; opacity: .55; }
+.employee-app .btn,
+.theme-employee .btn,
+.dash-app.theme-employee .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; height: auto; padding: 10px 18px; font-size: .88rem; font-weight: 700; border-radius: 11px; }
+
+.employee-app .btn--ghost,
+.theme-employee .btn--ghost,
+.dash-app.theme-employee .btn--ghost { color: var(--e-ink, #0f2747); }
+
+.hero .btn--ghost,
+.employee-hero .btn--ghost {
+  background: transparent;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+}
+.hero .btn--ghost:hover,
+.employee-hero .btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.employee-app .btn--complete,
+.theme-employee .btn--complete,
+.dash-app.theme-employee .btn--complete { color: var(--e-ok, #17754f); background: var(--e-ok-t, #e6f6ee); border: 1.5px solid #bfe6d2; box-shadow: none; }
+
+.employee-app .btn--light,
+.theme-employee .btn--light,
+.dash-app.theme-employee .btn--light { color: #123b7a; background: #fff; box-shadow: 0 8px 20px -10px rgba(0, 0, 0, .45); margin-top: 18px; }
+
+.employee-app .btn--light:hover,
+.theme-employee .btn--light:hover,
+.dash-app.theme-employee .btn--light:hover { background: #eef4ff; }
+
+.employee-app .btn:disabled,
+.theme-employee .btn:disabled,
+.dash-app.theme-employee .btn:disabled { cursor: not-allowed; opacity: .55; }
 
 /* Hero + stats */
 .employee-content .hero, .employee-hero { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 20px; overflow: hidden; padding: 32px 34px; border-radius: 20px; color: #fff; background: radial-gradient(circle at 85% 20%, rgba(124, 92, 255, .45), transparent 45%), linear-gradient(115deg, #112a52 0%, #1d4f9b 60%, #3677db 100%); box-shadow: 0 18px 38px -26px #173b78; }
@@ -224,9 +255,9 @@
 
 /* ===== Mentorship & Expert Network styles ===== */
 .tabs { display: flex; gap: 8px; border-bottom: 2px solid var(--e-line); padding-bottom: 2px; }
-.tab-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 0; background: transparent; color: var(--e-soft); font: inherit; font-size: .88rem; font-weight: 700; border-radius: 8px 8px 0 0; cursor: pointer; transition: all .15s; }
-.tab-btn:hover { color: var(--e-blue-d); background: #f1f5fc; }
-.tab-btn.is-active { color: var(--e-blue-d); border-bottom: 2px solid var(--e-blue); background: var(--e-tint); }
+.tab-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: 0; background: transparent; color: var(--e-soft, #5b6d86); font: inherit; font-size: .88rem; font-weight: 700; border-radius: 8px 8px 0 0; cursor: pointer; transition: all .15s; }
+.tab-btn:hover { color: var(--e-blue-d, #1d4ed8); background: #f1f5fc; }
+.tab-btn.is-active { color: var(--e-blue-d, #1d4ed8); border-bottom: 2px solid var(--e-blue, #2563eb); background: var(--e-tint, #eaf1ff); }
 
 .mentorship-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 900px) { .mentorship-grid { grid-template-columns: 1fr; } }

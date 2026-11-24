@@ -1,5 +1,7 @@
 /* ===== SkillSphere — Team Lead / Manager Workspace ===== */
-.manager-app {
+.manager-app,
+.theme-manager,
+.dash-app.theme-manager {
   --m-bg: #f4f7fb;
   --m-card: #ffffff;
   --m-line: #e2e8f0;

@@ -2,7 +2,9 @@
    SkillSphere — Mentor Workspace Styles
    ========================================================================= */
 
-.mentor-app {
+.mentor-app,
+.theme-mentor,
+.dash-app.theme-mentor {
   --mt-bg: #f8fafc;
   --mt-card: #ffffff;
   --mt-line: #e2e8f0;
@@ -285,7 +287,7 @@
   font-size: 0.82rem;
   font-weight: 600;
   background: #f1f5f9;
-  color: var(--mt-soft);
+  color: var(--mt-soft, #475569);
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.15s;
@@ -293,11 +295,11 @@
 
 .mentor-pill-btn:hover {
   background: #e2e8f0;
-  color: var(--mt-ink);
+  color: var(--mt-ink, #0f172a);
 }
 
 .mentor-pill-btn.is-active {
-  background: var(--mt-primary);
+  background: var(--mt-primary, #0d9488);
   color: #ffffff;
 }
 
@@ -388,38 +390,45 @@
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
+  color: var(--mt-ink, #0f172a);
   transition: all 0.15s ease;
 }
 
+.mt-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .mt-btn--primary {
-  background: var(--mt-primary);
+  background: var(--mt-primary, #0d9488);
   color: #ffffff;
 }
 
-.mt-btn--primary:hover {
-  background: var(--mt-primary-dark);
+.mt-btn--primary:hover:not(:disabled) {
+  background: var(--mt-primary-dark, #0f766e);
+  color: #ffffff;
 }
 
 .mt-btn--outline {
   background: #ffffff;
-  color: var(--mt-soft);
-  border-color: var(--mt-line);
+  color: var(--mt-soft, #475569);
+  border-color: var(--mt-line, #e2e8f0);
 }
 
-.mt-btn--outline:hover {
+.mt-btn--outline:hover:not(:disabled) {
   background: #f8fafc;
-  color: var(--mt-ink);
-  border-color: var(--mt-faint);
+  color: var(--mt-ink, #0f172a);
+  border-color: var(--mt-faint, #94a3b8);
 }
 
 .mt-btn--danger {
-  background: var(--mt-bad-tint);
-  color: var(--mt-bad);
+  background: var(--mt-bad-tint, #fef2f2);
+  color: var(--mt-bad, #dc2626);
   border-color: rgba(220, 38, 38, 0.2);
 }
 
-.mt-btn--danger:hover {
-  background: var(--mt-bad);
+.mt-btn--danger:hover:not(:disabled) {
+  background: var(--mt-bad, #dc2626);
   color: #ffffff;
 }
 
